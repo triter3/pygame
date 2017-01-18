@@ -9,11 +9,11 @@ class World():
         self.restart()
 
     def restart(self):
-        self.player = player.Player(0.2)
-        self.map = game_map.Map(0.2);
+        self.player = player.Player(40)
+        self.map = game_map.Map(40);
         self.camera = Camera()
         self.camera.follow(self.player)
-        self.resize(pg.display.Info().current_w)
+        self.resize()
 
     def update(self, time):
         #crida de updates
@@ -21,13 +21,12 @@ class World():
         #comprovacio de colisions
         while((colisions.colision_map(self.player,self.map))): pass
 
-    def resize(self, ref):
-        self.camera.resize(ref)
-        self.player.resize(ref)
-        self.map.resize(ref)
+    def resize(self):
+        self.camera.resize()
+        self.player.resize(self.camera)
+        self.map.resize(self.camera)
 
     def draw(self, screen):
-        self.camera.update()
         self.map.draw_map(screen, self.camera)
         self.player.draw(screen, self.camera)
 
@@ -35,11 +34,17 @@ class Camera():
     def __init__(self):
         self.ini_pos = v.Vec2(0,0)
         self.offset = v.Vec2(0,0)
+        self.size = v.Vec2(200,200)
         self.entity = None
 
-    def resize(self, ref):
-        self.ini_pos.x = pg.display.Info().current_w/2
-        self.ini_pos.y = pg.display.Info().current_h/2
+    def resize(self):
+        self.size.x = pg.display.Info().current_w
+        self.size.y = 200
+        if(pg.display.Info().current_h/self.size.y <= 2):
+            self.size.y = pg.display.Info().current_h
+        self.ini_pos.x = int(self.size.x/2)
+        self.ini_pos.y = int(self.size.y/2)
+        self.ref = int(pg.display.Info().current_h/self.size.y)
 
     def follow(self, entity):
         self.entity = entity
@@ -55,13 +60,11 @@ class Camera():
         self.offset.x = x
         self.offset.y = y
 
-    def update(self):
-        if self.entity != None:
-            self.offset.x = self.entity.rect.x + self.entity.rect.width/2
-            self.offset.y = self.entity.rect.y + self.entity.rect.height/2
-
     def get_pos(self):
         pos = v.Vec2(0,0)
-        pos.x = self.ini_pos.x - self.offset.x
-        pos.y = self.ini_pos.y - self.offset.y
+        pos.x = int(self.ini_pos.x/self.ref - self.offset.x)
+        pos.y = int(self.ini_pos.y - self.offset.y)
+        if self.entity != None:
+            pos.x -= self.entity.rect.x + int(self.entity.rect.width/2)
+            pos.y -= self.entity.rect.y + int(self.entity.rect.height/2)
         return pos

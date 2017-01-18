@@ -10,18 +10,18 @@ class Map:
 		self.buffer_map = [1,1,1,1,1,1,1,1,1],[1,0,0,0,0,0,0,0,0],[1,0,0,0,0,0,0,0,1],[1,0,0,0,0,0,0,0,1], [1,0,0,0,0,1,0,0,1], [1,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1]
 		# self.buffer_map = [0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]
 
-	def resize(self, ref):
-		self.tile.set_size(ref, self.tile_dim)
-		self.shift.x = -((len(self.buffer_map[0]))*self.tile.get_size())/2
-		self.shift.y = -((len(self.buffer_map))*self.tile.get_size())/2
+	def resize(self, camera):
+		self.tile.set_size(self.tile_dim*camera.ref)
+		self.shift.x = -len(self.buffer_map[0])*self.tile_dim/2
+		self.shift.y = -len(self.buffer_map)*self.tile_dim/2
 
 	def draw_map(self, screen, camera):
 		for j in range(0, len(self.buffer_map)):
 			for i in range(0, len(self.buffer_map[j])):
 				if self.buffer_map[j][i] == 1:
 					self.tile.draw(screen, camera,
-						i*self.tile.get_size() + self.shift.x,
-						j*self.tile.get_size() + self.shift.y )
+						i*self.tile_dim + self.shift.x,
+						j*self.tile_dim + self.shift.y )
 
 
 class Tile():
@@ -31,12 +31,11 @@ class Tile():
 	def draw(self, screen, camera, x ,y):
 		self.rect.x = x + camera.get_pos().x
 		self.rect.y = y + camera.get_pos().y
+		self.rect.x = int(self.rect.x*camera.ref)
+		self.rect.y = int(self.rect.y*camera.ref)
 		screen.blit(self.image, self.rect)
 
-	def get_size(self):
-		return self.rect.width
-
-	def set_size(self, ref, dimensions):
-		self.image = pg.Surface([dimensions*ref, dimensions*ref])
+	def set_size(self, size):
+		self.image = pg.Surface([size, size])
 		self.image.fill(self.color)
 		self.rect = self.image.get_rect()
