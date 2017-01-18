@@ -1,5 +1,6 @@
 import pygame as pg
 import vec2 as v
+import os
 
 class Map:
 	def __init__(self, tile_dim):
@@ -27,6 +28,7 @@ class Map:
 class Tile():
 	def __init__(self):
 		self.color = [150,2,140] #temporal
+		self.or_image = pg.image.load(os.path.join("tile1.png")).convert()
 
 	def draw(self, screen, camera, x ,y):
 		self.rect.x = x + camera.get_pos().x
@@ -36,6 +38,5 @@ class Tile():
 		screen.blit(self.image, self.rect)
 
 	def set_size(self, size):
-		self.image = pg.Surface([size, size])
-		self.image.fill(self.color)
+		self.image = pg.transform.scale(self.or_image, [size, size])
 		self.rect = self.image.get_rect()

@@ -9,8 +9,8 @@ class World():
         self.restart()
 
     def restart(self):
-        self.player = player.Player(40)
-        self.map = game_map.Map(40);
+        self.player = player.Player(32)
+        self.map = game_map.Map(32);
         self.camera = Camera()
         self.camera.follow(self.player)
         self.resize()

@@ -1,5 +1,6 @@
 import pygame as pg
 import vec2 as v
+import os
 
 class Player():
 	def __init__(self, dim):
@@ -8,6 +9,7 @@ class Player():
 		self.velocity = 0.2
 		self.rect = pg.Rect(-dim/2,-dim/2,dim,dim)
 		self.last_pos = v.Vec2(0,0)
+		self.or_image = pg.image.load(os.path.join("player.png")).convert()
 
 	def update(self, time):
 		key = pg.key.get_pressed()
@@ -23,8 +25,7 @@ class Player():
 
 	def resize(self, camera):
 		#modifica la imatge
-		self.image = pg.Surface([int(self.dim*camera.ref), int(self.dim*camera.ref)])
-		self.image.fill(self.color)
+		self.image = pg.transform.scale(self.or_image, [self.dim*camera.ref, self.dim*camera.ref])
 
 	def move(self, vec, update = True):
 		if update:
