@@ -17,7 +17,7 @@ def colision_map(entity,map):
             aux = v.Vec2(i,j)
             if(entity.get_offset().x < 0): aux.x = length.x + x - i - 1
             if(entity.get_offset().y < 0): aux.y = length.y + y - j - 1
-            if map.buffer_map[aux.y][aux.x] == 1:
+            if map.buffer_map[aux.y][aux.x] != "0":
                 r_blk = pg.Rect(0,0, map.tile_dim, map.tile_dim)
                 r_blk.x = aux.x*map.tile_dim + map.shift.x
                 r_blk.y = aux.y*map.tile_dim + map.shift.y

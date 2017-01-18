@@ -3,13 +3,12 @@ import vec2 as v
 import os
 
 class Player():
-	def __init__(self, dim):
-		self.dim = dim
-		self.color = [140, 2, 2] #temporal
-		self.velocity = 0.2
-		self.rect = pg.Rect(-dim/2,-dim/2,dim,dim)
+	def __init__(self, pro):
+		dim = v.Vec2(pro["width"]*2, pro["height"]*2)
+		self.velocity = pro["velocity"]
+		self.rect = pg.Rect(-dim.x/2,-dim.y/2,dim.x,dim.y)
 		self.last_pos = v.Vec2(0,0)
-		self.or_image = pg.image.load(os.path.join("player.png")).convert()
+		self.or_image = pg.image.load(os.path.join(pro["skin"])).convert()
 
 	def update(self, time):
 		key = pg.key.get_pressed()
@@ -25,7 +24,7 @@ class Player():
 
 	def resize(self, camera):
 		#modifica la imatge
-		self.image = pg.transform.scale(self.or_image, [self.dim*camera.ref, self.dim*camera.ref])
+		self.image = pg.transform.scale(self.or_image, [self.rect.width*camera.ref, self.rect.height*camera.ref])
 
 	def move(self, vec, update = True):
 		if update:

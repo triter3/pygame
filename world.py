@@ -3,16 +3,18 @@ import player
 import game_map
 import colisions
 import vec2 as v
+import json
 
 class World():
     def __init__(self):
         self.restart()
 
     def restart(self):
-        self.player = player.Player(32)
-        self.map = game_map.Map(32);
+        pro = self.load_pro("game_properties.json")
+        self.player = player.Player(pro["players"]["player1"])
+        self.map = game_map.Map(pro["map"]);
         self.camera = Camera()
-        self.camera.follow(self.player)
+        # self.camera.follow(self.player)
         self.resize()
 
     def update(self, time):
@@ -29,6 +31,12 @@ class World():
     def draw(self, screen):
         self.map.draw_map(screen, self.camera)
         self.player.draw(screen, self.camera)
+
+    def load_pro(self, name):
+        f = open(name, "r")
+        return json.load(f)
+
+
 
 class Camera():
     def __init__(self):

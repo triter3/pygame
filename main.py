@@ -4,7 +4,7 @@ import sys
 
 def main():
 	pg.init()
-	screen = pg.display.set_mode([200,200], pg.RESIZABLE)
+	screen = pg.display.set_mode([500,500], pg.RESIZABLE)
 	pg.display.set_caption("pygame")
 	clock = pg.time.Clock()
 	g_world = world.World()
@@ -20,7 +20,7 @@ def main():
 			elif event.type == pg.KEYDOWN:
 				if event.key == pg.K_ESCAPE: sys.exit()
 		screen.fill([0,0,0])
-		g_world.update(clock.get_time())
+		g_world.update(clock.get_time()/100)
 		g_world.draw(screen)
 		pg.display.flip()
 
