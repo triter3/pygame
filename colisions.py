@@ -24,6 +24,7 @@ def colision_map(entity,map):
                 pr = get_regression(entity.rect, entity.last_pos, r_blk)
                 if pr != None:
                     entity.move(pr, False)
+                    entity.colision(get_side(pr))
                     return True
     return False
 
@@ -69,7 +70,18 @@ def get_regression(rect1, last_pos1, rect2, ref = None):
             return v.Vec2(v2.x - v1.x, 0)
         else:
             if ref == None:
+                print("eyyy")
                 return(v.Vec2(v2.x - v1.x, v2.y - v1.y))
+
+def get_side(regression):
+    if regression.x == 0:
+        if regression.y < 0: return "down"
+        else: return "up"
+    elif regression.y == 0:
+        if regression.x < 0: return "right"
+    else: return "left"
+    return "none"
+
 
 
 def abs(x):

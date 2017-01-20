@@ -9,17 +9,19 @@ class Player():
 		self.rect = pg.Rect(-dim.x/2,-dim.y/2,dim.x,dim.y)
 		self.last_pos = v.Vec2(0,0)
 		self.or_image = pg.image.load(os.path.join(pro["skin"])).convert()
+		self.jump = Jump(9,0)
 
 	def update(self, time):
 		key = pg.key.get_pressed()
-		direction = v.Vec2(0,0)
+		direction = v.Vec2(0,1) #gravity on 'y'= 1 // 'y' = 0
 		if key[pg.K_a]: direction.x = -1
 		if key[pg.K_d]: direction.x = 1
-		if key[pg.K_w]: direction.y = -1
-		if key[pg.K_s]: direction.y = 1
-		if not key[pg.K_LSHIFT]:
-			direction.x *= int(self.velocity*time)
-			direction.y *= int(self.velocity*time)
+		if key[pg.K_SPACE]: self.jump.jump() #gravity on
+		# if key[pg.K_w]: direction.y = -1 #gravity off
+		# if key[pg.K_s]: direction.y = 1 #gravity off
+		direction.x *= int(self.velocity*time)
+		# direction.y *= int(self.velocity*time) #gravity off
+		direction.y *= self.jump.get_movement(time) #gravity on
 		self.move(direction)
 
 	def resize(self, camera):
@@ -32,6 +34,13 @@ class Player():
 			self.last_pos.y = self.rect.y
 		self.rect.x += vec.x
 		self.rect.y += vec.y
+
+	def colision(self, side):
+		if side == "down":
+			self.jump.floor()
+
+		if side == "up":
+			self.jump.velocity = 0
 
 	def set_pos(self, vec, update = True):
 		if update:
@@ -52,3 +61,25 @@ class Player():
 		rect.y += camera.get_pos().y
 		v.zoom_rect(rect, camera.ref)
 		screen.blit(self.image, rect)
+
+class Jump():
+	def __init__(self, gravity, pro):
+		self.gravity = gravity
+		self.jump_f = 30
+		self.in_jump = False
+		self.velocity = 0
+
+	def jump(self):
+		if(not self.in_jump):
+			self.velocity = -self.jump_f
+			self.in_jump = True
+
+	def get_movement(self, time):
+		x = int(self.velocity*time)
+		if self.velocity < 25:
+			self.velocity = self.velocity + self.gravity*time
+		return x
+
+	def floor(self):
+		self.velocity = 0
+		self.in_jump = False
