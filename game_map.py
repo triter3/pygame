@@ -7,7 +7,7 @@ class Map:
 	def __init__(self, pro):
 		self.tile_dim = pro["tile_size"]*2
 		self.open_map(pro["dir"])
-		self.load_tiles(pro["tiles"], pro["tiles_num"])
+		self.load_tiles(pro["tiles"])
 		self.shift = v.Vec2(0,0)
 
 	def resize(self, camera):
@@ -31,15 +31,13 @@ class Map:
 			for row in f:
 				self.buffer_map.append(row)
 
-	def load_tiles(self, pro, n):
+	def load_tiles(self, pro):
 		self.tiles_list = []
-		for i in range(1, n+1):
-			print(i)
+		for i in range(1, pro["num"] + 1):
 			self.tiles_list.append(Tile(pro[str(i)]))
 
 class Tile():
 	def __init__(self, img_file):
-		print(img_file)
 		self.or_image = pg.image.load(os.path.join(img_file)).convert()
 
 	def draw(self, screen, camera, x ,y):

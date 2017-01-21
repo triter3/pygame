@@ -22,16 +22,16 @@ def colision_map(entity,map):
                 r_blk.x = aux.x*map.tile_dim + map.shift.x
                 r_blk.y = aux.y*map.tile_dim + map.shift.y
                 pr = get_regression(entity.rect, entity.last_pos, r_blk)
-                if pr != None:
-                    entity.move(pr, False)
-                    entity.colision(get_side(pr))
-                    return True
+                entity.move(pr, False)
+                entity.colision(get_side(pr))
+                return True
     return False
 
 #colisions entre dos rectangles
 def in_colision(rect1, rect2):
-    if(rect1.x < rect2.x + rect2.width and rect1.x + rect1.width > rect2.x
-    and rect1.y < rect2.y + rect2.height and rect.y + rect1.height > rect2.y):
+    print("0")
+    if (rect1.x < rect2.x + rect2.width and rect1.x + rect1.width > rect2.x
+    and rect1.y < rect2.y + rect2.height and rect1.y + rect1.height > rect2.y):
         return True
     else: return False
 
@@ -72,6 +72,36 @@ def get_regression(rect1, last_pos1, rect2, ref = None):
             if ref == None:
                 print("eyyy")
                 return(v.Vec2(v2.x - v1.x, v2.y - v1.y))
+
+def colision_entities(entity1, entity2):
+    if in_colision(entity1.rect, entity2.rect):
+        print("colison!!!")
+        if entity1.rect.x == entity1.last_pos.x and entity1.rect.y == entity1.last_pos.y:
+            pr = get_regression(entity2.rect, entity2.last_pos, entity1.rect)
+            entity2.move(pr, False)
+            entity2.colision(get_side(pr))
+            entity1.colision(invert(get_side(pr)))
+            return True
+        else:
+            pr = get_regression(entity1.rect, entity1.last_pos, entity2.rect)
+            if entity2.rect.x == entity2.last_pos.x and entity2.rect.y == entity2.last_pos.y:
+                entity1.move(pr, False)
+            else:
+                x = int(pr.x/2)
+                y = int(pr.y/2)
+                entity1.move(v.Vec2(x,y), False)
+                entity2.move(v.Vec2(-pr.x + x,-pr.y + y), False)
+            entity1.colision(get_side(pr))
+            entity2.colision(invert(get_side(pr)))
+            return True
+    return False
+
+
+def invert(side):
+    if side == "down": return "up"
+    elif side == "up": return "down"
+    elif side == "left": return "right"
+    else: return "left"
 
 def get_side(regression):
     if regression.x == 0:

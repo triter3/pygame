@@ -2,19 +2,38 @@
   "map": {
     "dir": "container_map.txt",
     "tile_size": 16,
-    "tiles_num": 2,
+    "gravity": 9,
     "tiles": {
+      "num": 2,
       "1": "tile1.png",
       "2": "tile2.png"
     }
   },
   "players": {
-    "num": 1,
+    "num": 2,
     "player1": {
       "width": 16,
       "height": 16,
       "velocity": 15,
-      "skin": "player.png"
+      "jump_force": 25,
+      "skin": "player.png",
+      "controls": {
+        "right": "d",
+        "left": "a",
+        "jump": "f"
+      }
+    },
+    "player2": {
+      "width": 16,
+      "height": 16,
+      "velocity": 15,
+      "jump_force": 25,
+      "skin": "player.png",
+      "controls": {
+        "right": "l",
+        "left": "k",
+        "jump": "ñ"
+      }
     }
   }
 }

@@ -11,30 +11,44 @@ class World():
 
     def restart(self):
         pro = self.load_pro("game_properties.json")
-        self.player = player.Player(pro["players"]["player1"])
         self.map = game_map.Map(pro["map"]);
+        self.entity_list = []
+        self.init_players(pro["players"], pro["map"]["gravity"])
         self.camera = Camera()
-        # self.camera.follow(self.player)
+        self.camera.follow(self.entity_list[0])
         self.resize()
+        self.entity_list[0].rect.x += 32
 
     def update(self, time):
         #crida de updates
-        self.player.update(time)
+        for ent in self.entity_list:
+            ent.update(time)
         #comprovacio de colisions
-        while((colisions.colision_map(self.player,self.map))): pass
+        for ent in self.entity_list:
+            while((colisions.colision_map(ent,self.map))): pass
+        #colisio entre entities
+        colisions.colision_entities(self.entity_list[0], self.entity_list[1])
+
 
     def resize(self):
         self.camera.resize()
-        self.player.resize(self.camera)
+        for ent in self.entity_list:
+            ent.resize(self.camera)
         self.map.resize(self.camera)
 
     def draw(self, screen):
         self.map.draw_map(screen, self.camera)
-        self.player.draw(screen, self.camera)
+        for ent in self.entity_list:
+            ent.draw(screen, self.camera)
 
     def load_pro(self, name):
         f = open(name, "r")
         return json.load(f)
+
+    def init_players(self, pro, gravity):
+        for i in range(1, pro["num"] + 1):
+            self.entity_list.append(player.Player(pro["player" + str(i)], gravity))
+
 
 
 

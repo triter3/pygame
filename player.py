@@ -3,20 +3,22 @@ import vec2 as v
 import os
 
 class Player():
-	def __init__(self, pro):
+	def __init__(self, pro, gravity):
 		dim = v.Vec2(pro["width"]*2, pro["height"]*2)
 		self.velocity = pro["velocity"]
+		self.controls = pro["controls"]
 		self.rect = pg.Rect(-dim.x/2,-dim.y/2,dim.x,dim.y)
 		self.last_pos = v.Vec2(0,0)
 		self.or_image = pg.image.load(os.path.join(pro["skin"])).convert()
-		self.jump = Jump(9,0)
+		self.jump = Jump(pro["jump_force"])
+		self.jump.gravity = gravity
 
 	def update(self, time):
 		key = pg.key.get_pressed()
 		direction = v.Vec2(0,1) #gravity on 'y'= 1 // 'y' = 0
-		if key[pg.K_a]: direction.x = -1
-		if key[pg.K_d]: direction.x = 1
-		if key[pg.K_SPACE]: self.jump.jump() #gravity on
+		if key[ord(self.controls["left"])]: direction.x = -1
+		if key[ord(self.controls["right"])]: direction.x = 1
+		if key[ord(self.controls["jump"])]: self.jump.jump() #gravity on
 		# if key[pg.K_w]: direction.y = -1 #gravity off
 		# if key[pg.K_s]: direction.y = 1 #gravity off
 		direction.x *= int(self.velocity*time)
@@ -63,9 +65,9 @@ class Player():
 		screen.blit(self.image, rect)
 
 class Jump():
-	def __init__(self, gravity, pro):
-		self.gravity = gravity
-		self.jump_f = 30
+	def __init__(self, jump_f):
+		self.gravity = 0
+		self.jump_f = jump_f
 		self.in_jump = False
 		self.velocity = 0
 
